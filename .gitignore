@@ -2,6 +2,9 @@
 ganga_aqua.db
 ganga_aqua.db-journal
 
+# ── Generated knowledge-graph output (graphify) ────────────
+graphify-out/
+
 # ── Secrets ────────────────────────────────────────────────
 .env
 .env.*
