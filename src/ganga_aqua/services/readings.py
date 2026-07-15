@@ -77,7 +77,7 @@ def get_deficiency_report(db: Session) -> list[dict]:
     report: list[dict] = []
     stations = list_stations(db)
     latest = {r.station_id: r for r in get_latest_readings(db)}
-    cutoff = datetime.now(UTC) - timedelta(days=7)
+    cutoff = (datetime.now(UTC) - timedelta(days=7)).replace(tzinfo=None)
 
     for station in stations:
         reading = latest.get(station.id)
