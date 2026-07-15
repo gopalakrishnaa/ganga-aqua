@@ -1,6 +1,13 @@
 import type { Reading } from "./types";
 
 // CPCB-style bathing water thresholds (simplified).
+export const STANDARD_RANGES = [
+  { label: "pH", range: "6.5 – 8.5" },
+  { label: "Dissolved oxygen", range: "≥ 4 mg/L" },
+  { label: "BOD", range: "≤ 3 mg/L" },
+  { label: "Turbidity", range: "≤ 10 NTU" },
+];
+
 export function readingIssues(reading: Reading): string[] {
   const issues: string[] = [];
   if (reading.ph !== null && (reading.ph < 6.5 || reading.ph > 8.5)) {

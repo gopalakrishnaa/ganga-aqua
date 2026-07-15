@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { useMemo } from "react";
 import { StationMap } from "@/components/StationMap";
 import { api } from "@/lib/api";
-import { readingIssues } from "@/lib/status";
+import { readingIssues, STANDARD_RANGES } from "@/lib/status";
 import type { Reading } from "@/lib/types";
 
 export default function HomePage() {
@@ -38,6 +38,15 @@ export default function HomePage() {
         <div className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-[#22c55e]" /> Normal</div>
         <div className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-[#eab308]" /> 1 issue</div>
         <div className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-[#ef4444]" /> 2+ issues</div>
+      </div>
+      <div className="absolute top-3 right-3 z-10 rounded-md bg-slate-950/90 border border-slate-800 px-3 py-2 text-xs text-slate-300 space-y-1">
+        <p className="font-medium text-slate-100 mb-1.5">Standard ranges</p>
+        {STANDARD_RANGES.map((r) => (
+          <div key={r.label} className="flex items-center justify-between gap-4">
+            <span>{r.label}</span>
+            <span className="text-slate-400">{r.range}</span>
+          </div>
+        ))}
       </div>
       <StationMap stations={stationsQuery.data ?? []} readingsByStation={readingsByStation} />
     </div>
