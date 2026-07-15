@@ -1,12 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Map, { Marker, Popup } from "react-map-gl/mapbox";
+import Map, { Marker, Popup } from "react-map-gl/maplibre";
 import Link from "next/link";
-import "mapbox-gl/dist/mapbox-gl.css";
-import { MAPBOX_TOKEN } from "@/lib/config";
+import "maplibre-gl/dist/maplibre-gl.css";
 import { statusColor } from "@/lib/status";
 import type { Reading, Station } from "@/lib/types";
+
+// Free, keyless vector basemap — CARTO's CDN-backed style, built for
+// unlimited public use (unlike raw OSM tiles, which rate-limit automated
+// traffic per their usage policy).
+const BASEMAP_STYLE = "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
 
 type StationWithIssues = Station & { issueCount: number; latest: Reading | null };
 
@@ -30,23 +34,11 @@ export function StationMap({
     [stations, readingsByStation],
   );
 
-  if (!MAPBOX_TOKEN) {
-    return (
-      <div className="flex-1 grid place-items-center px-4">
-        <p className="text-sm text-slate-400 max-w-sm text-center">
-          Set <code className="text-slate-300">NEXT_PUBLIC_MAPBOX_TOKEN</code> in{" "}
-          <code className="text-slate-300">frontend/.env.local</code> to enable the map.
-        </p>
-      </div>
-    );
-  }
-
   return (
     <Map
-      mapboxAccessToken={MAPBOX_TOKEN}
       initialViewState={{ longitude: 82.5, latitude: 26, zoom: 5 }}
       style={{ flex: 1 }}
-      mapStyle="mapbox://styles/mapbox/dark-v11"
+      mapStyle={BASEMAP_STYLE}
     >
       {points.map((s) => (
         <Marker
