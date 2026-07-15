@@ -12,8 +12,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { CredentialsGate } from "@/components/CredentialsGate";
-import { useCredentials } from "@/lib/useCredentials";
 import { api } from "@/lib/api";
 import type { Reading } from "@/lib/types";
 
@@ -25,11 +23,12 @@ const METRICS: { key: keyof Reading; label: string; unit: string; color: string 
   { key: "turbidity_ntu", label: "Turbidity", unit: "NTU", color: "#eab308" },
 ];
 
-function StationDetail({ stationId }: { stationId: number }) {
-  const { baseUrl, apiKey } = useCredentials();
-  const { data, error, isLoading } = useSWR(
-    apiKey ? ["history", baseUrl, apiKey, stationId] : null,
-    () => api.readingsHistory(baseUrl, apiKey, stationId, 30),
+export default function StationPage() {
+  const params = useParams<{ id: string }>();
+  const stationId = Number(params.id);
+
+  const { data, error, isLoading } = useSWR(["history", stationId], () =>
+    api.readingsHistory(stationId, 30),
   );
 
   const chartData = (data ?? [])
@@ -90,16 +89,5 @@ function StationDetail({ stationId }: { stationId: number }) {
         </div>
       )}
     </div>
-  );
-}
-
-export default function StationPage() {
-  const params = useParams<{ id: string }>();
-  const stationId = Number(params.id);
-
-  return (
-    <CredentialsGate>
-      <StationDetail stationId={stationId} />
-    </CredentialsGate>
   );
 }

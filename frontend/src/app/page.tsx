@@ -2,25 +2,16 @@
 
 import useSWR from "swr";
 import { useMemo } from "react";
-import { CredentialsGate } from "@/components/CredentialsGate";
 import { StationMap } from "@/components/StationMap";
-import { useCredentials } from "@/lib/useCredentials";
 import { api } from "@/lib/api";
 import { readingIssues } from "@/lib/status";
 import type { Reading } from "@/lib/types";
 
-function MapView() {
-  const { baseUrl, apiKey } = useCredentials();
-
-  const stationsQuery = useSWR(
-    apiKey ? ["stations", baseUrl, apiKey] : null,
-    () => api.stations(baseUrl, apiKey),
-  );
-  const readingsQuery = useSWR(
-    apiKey ? ["latest-readings", baseUrl, apiKey] : null,
-    () => api.latestReadings(baseUrl, apiKey),
-    { refreshInterval: 60_000 },
-  );
+export default function HomePage() {
+  const stationsQuery = useSWR("stations", () => api.stations());
+  const readingsQuery = useSWR("latest-readings", () => api.latestReadings(), {
+    refreshInterval: 60_000,
+  });
 
   const readingsByStation = useMemo(() => {
     const map = new Map<number, { reading: Reading; issueCount: number }>();
@@ -36,7 +27,7 @@ function MapView() {
   if (stationsQuery.error) {
     return (
       <div className="flex-1 grid place-items-center text-red-400 text-sm">
-        Failed to load stations. Check your API key and base URL in Settings.
+        Failed to load stations. Is the backend running?
       </div>
     );
   }
@@ -50,13 +41,5 @@ function MapView() {
       </div>
       <StationMap stations={stationsQuery.data ?? []} readingsByStation={readingsByStation} />
     </div>
-  );
-}
-
-export default function HomePage() {
-  return (
-    <CredentialsGate>
-      <MapView />
-    </CredentialsGate>
   );
 }
