@@ -1,4 +1,4 @@
-"""Streamlit BI dashboard for Ganga water quality."""
+"""Streamlit BI dashboard for Indian river water quality."""
 
 from __future__ import annotations
 
@@ -12,9 +12,9 @@ import plotly.graph_objects as go
 import streamlit as st
 
 API_BASE = os.getenv("API_BASE_URL", "http://localhost:8000")
-API_KEY = os.getenv("GANGA_API_KEY", "")
+API_KEY = os.getenv("INDIA_AQUA_API_KEY", "")
 
-st.set_page_config(page_title="Ganga Aqua BI", page_icon="💧", layout="wide")
+st.set_page_config(page_title="India Aqua BI", page_icon="💧", layout="wide")
 
 
 def _headers() -> dict[str, str]:
@@ -43,11 +43,11 @@ def status_color(do: float | None) -> str:
     return "red"
 
 
-st.title("💧 Ganga Aqua — Water Quality Intelligence")
+st.title("💧 India Aqua — Water Quality Intelligence")
 st.caption("Validated readings from CPCB / Namami Gange / India WRIS sources")
 
 if not API_KEY:
-    st.warning("Set `GANGA_API_KEY` env var (from `ganga-aqua seed`) to load data.")
+    st.warning("Set `INDIA_AQUA_API_KEY` env var (from `india-aqua seed`) to load data.")
 
 tab_status, tab_deficiency, tab_trends = st.tabs(["Current Status", "Data Deficiency", "Trends"])
 
@@ -56,7 +56,7 @@ with tab_status:
     try:
         readings = fetch_json("/api/v1/readings/latest")
         if not readings:
-            st.info("No readings yet. Run `ganga-aqua seed` first.")
+            st.info("No readings yet. Run `india-aqua seed` first.")
         else:
             df = pd.DataFrame(readings)
             cols = [

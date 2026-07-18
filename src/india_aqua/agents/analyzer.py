@@ -15,7 +15,7 @@ from openai import OpenAI
 from pydantic import BaseModel
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-from ganga_aqua.config import get_settings
+from india_aqua.config import get_settings
 
 logger = logging.getLogger(__name__)
 

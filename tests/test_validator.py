@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock
 
-from ganga_aqua.agents.validator import LLMValidator
+from india_aqua.agents.validator import LLMValidator
 
 
 def test_validation_accepts_match():

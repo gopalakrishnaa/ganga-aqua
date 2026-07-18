@@ -7,7 +7,7 @@ from datetime import UTC, datetime, timedelta
 from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload
 
-from ganga_aqua.db.models import MonitoringStation, WaterQualityReading
+from india_aqua.db.models import MonitoringStation, WaterQualityReading
 
 EXPECTED_METRICS = [
     "ph",

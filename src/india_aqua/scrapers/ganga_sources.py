@@ -10,8 +10,8 @@ import logging
 import random
 from datetime import UTC, datetime, timedelta
 
-from ganga_aqua.config import get_settings
-from ganga_aqua.scrapers.base import BaseScraper, ScrapedReading
+from india_aqua.config import get_settings
+from india_aqua.scrapers.base import BaseScraper, ScrapedReading
 
 logger = logging.getLogger(__name__)
 

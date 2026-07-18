@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ganga Aqua",
-  description: "Water quality monitoring for the Ganga river network",
+  title: "India Aqua",
+  description: "Water quality monitoring for India's river network",
 };
 
 export default function RootLayout({

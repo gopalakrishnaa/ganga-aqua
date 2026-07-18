@@ -7,8 +7,8 @@ import secrets
 
 from sqlalchemy.orm import Session
 
-from ganga_aqua.config import get_settings
-from ganga_aqua.db.models import SaasClient, SaasTier
+from india_aqua.config import get_settings
+from india_aqua.db.models import SaasClient, SaasTier
 
 
 def hash_api_key(raw_key: str) -> str:

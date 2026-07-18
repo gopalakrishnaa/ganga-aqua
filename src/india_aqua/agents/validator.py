@@ -10,11 +10,11 @@ from openai import OpenAI
 from pydantic import BaseModel, Field
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-from ganga_aqua.config import get_settings
+from india_aqua.config import get_settings
 
 logger = logging.getLogger(__name__)
 
-VALIDATION_SYSTEM_PROMPT = """You are a strict data validation agent for Ganga River water quality readings.
+VALIDATION_SYSTEM_PROMPT = """You are a strict data validation agent for Indian river water quality readings.
 Your ONLY job: decide whether extracted structured values PERFECTLY match the raw scraped text.
 
 Rules:

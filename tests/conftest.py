@@ -8,11 +8,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from ganga_aqua.api.app import create_app
-from ganga_aqua.db.base import Base
-from ganga_aqua.db.session import get_db
-from ganga_aqua.services.auth import create_client, generate_api_key
-from ganga_aqua.services.seed import run_seed
+from india_aqua.api.app import create_app
+from india_aqua.db.base import Base
+from india_aqua.db.session import get_db
+from india_aqua.services.auth import create_client, generate_api_key
+from india_aqua.services.seed import run_seed
 
 
 @pytest.fixture()

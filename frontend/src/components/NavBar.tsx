@@ -21,7 +21,7 @@ export function NavBar() {
             </svg>
           </span>
           <span className="flex flex-col leading-none">
-            <span className="font-semibold tracking-tight text-slate-900">Ganga Aqua</span>
+            <span className="font-semibold tracking-tight text-slate-900">India Aqua</span>
             <span className="text-[11px] text-cyan-700/80 mt-0.5">Water quality monitoring</span>
           </span>
         </Link>

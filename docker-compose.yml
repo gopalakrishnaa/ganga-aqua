@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: ganga_aqua
+      POSTGRES_DB: india_aqua
     ports:
       - "5432:5432"
     volumes:
@@ -27,8 +27,8 @@ services:
         condition: service_healthy
     command: >
       sh -c "uv run alembic upgrade head &&
-             uv run ganga-aqua seed &&
-             uv run ganga-aqua runserver --host 0.0.0.0 --port 8000"
+             uv run india-aqua seed &&
+             uv run india-aqua runserver --host 0.0.0.0 --port 8000"
 
   dashboard:
     build:
@@ -38,7 +38,7 @@ services:
       - "8501:8501"
     environment:
       API_BASE_URL: http://api:8000
-      GANGA_API_KEY: ${BOOTSTRAP_API_KEY:-}
+      INDIA_AQUA_API_KEY: ${BOOTSTRAP_API_KEY:-}
     depends_on:
       - api
 

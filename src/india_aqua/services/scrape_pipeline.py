@@ -15,11 +15,11 @@ import logging
 
 from sqlalchemy.orm import Session
 
-from ganga_aqua.agents.analyzer import WQIAnalyzer
-from ganga_aqua.agents.validator import LLMValidator
-from ganga_aqua.db.models import MonitoringStation, ValidationLog, WaterQualityReading
-from ganga_aqua.scrapers.base import ScrapedReading
-from ganga_aqua.scrapers.ganga_sources import PlaywrightScraper
+from india_aqua.agents.analyzer import WQIAnalyzer
+from india_aqua.agents.validator import LLMValidator
+from india_aqua.db.models import MonitoringStation, ValidationLog, WaterQualityReading
+from india_aqua.scrapers.base import ScrapedReading
+from india_aqua.scrapers.ganga_sources import PlaywrightScraper
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +124,7 @@ def process_reading(
 
 async def run_scrape_pipeline(db: Session, use_playwright: bool = True) -> dict[str, int]:
     scraper = PlaywrightScraper() if use_playwright else __import__(
-        "ganga_aqua.scrapers.ganga_sources", fromlist=["DemoScraper"]
+        "india_aqua.scrapers.ganga_sources", fromlist=["DemoScraper"]
     ).DemoScraper()
     validator = LLMValidator()
     analyzer = WQIAnalyzer()

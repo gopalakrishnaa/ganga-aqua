@@ -9,7 +9,7 @@ doesn't report (pH/DO/COD/turbidity/temperature) from the real BOD using a
 plausible pollution-correlated model — clearly labelled as such in raw_text.
 
 Given how infrequently the source updates, this is meant to be run by hand
-(`ganga-aqua import-cpcb-report`) when a new edition drops, not on a tight
+(`india-aqua import-cpcb-report`) when a new edition drops, not on a tight
 schedule.
 """
 
@@ -25,7 +25,7 @@ from pathlib import Path
 import httpx
 from pypdf import PdfReader
 
-from ganga_aqua.scrapers.base import BaseScraper, ScrapedReading
+from india_aqua.scrapers.base import BaseScraper, ScrapedReading
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +89,7 @@ def fetch_pdf_text(url: str = REPORT_URL, *, timeout: float = 60.0) -> str:
     # than a blanket one.
     resp = httpx.get(
         url,
-        headers={"User-Agent": "ganga-aqua-import/1.0"},
+        headers={"User-Agent": "india-aqua-import/1.0"},
         timeout=timeout,
         follow_redirects=True,
         verify=False,
@@ -243,7 +243,7 @@ def geocode(query: str, cache: GeocodeCache, client: httpx.Client) -> tuple[floa
         resp = client.get(
             "https://nominatim.openstreetmap.org/search",
             params={"q": query, "format": "json", "limit": 1, "countrycodes": "in"},
-            headers={"User-Agent": "ganga-aqua-import/1.0 (contact: bhat.gka666@gmail.com)"},
+            headers={"User-Agent": "india-aqua-import/1.0 (contact: bhat.gka666@gmail.com)"},
             timeout=15,
         )
         resp.raise_for_status()
@@ -293,22 +293,19 @@ def derive_synthetic_metrics(bod: float, seed: int) -> dict:
 
 
 def is_sane(row: dict, lat: float, lon: float) -> bool:
-    if row["priority"] not in VALID_PRIORITIES:
-        return False
-    if not (0 <= row["max_bod"] <= 500):
-        return False
-    if not (INDIA_BBOX["lat_min"] <= lat <= INDIA_BBOX["lat_max"]):
-        return False
-    if not (INDIA_BBOX["lon_min"] <= lon <= INDIA_BBOX["lon_max"]):
-        return False
-    return True
+    return (
+        row["priority"] in VALID_PRIORITIES
+        and 0 <= row["max_bod"] <= 500
+        and INDIA_BBOX["lat_min"] <= lat <= INDIA_BBOX["lat_max"]
+        and INDIA_BBOX["lon_min"] <= lon <= INDIA_BBOX["lon_max"]
+    )
 
 
 class CPCBReportScraper(BaseScraper):
     """One-shot importer for the CPCB Polluted River Stretches report.
 
     Not part of the periodic demo/live scrape rotation — run explicitly via
-    `ganga-aqua import-cpcb-report` when a new report edition is published.
+    `india-aqua import-cpcb-report` when a new report edition is published.
     """
 
     name = "cpcb_report"

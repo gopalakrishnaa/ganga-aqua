@@ -5,9 +5,9 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from ganga_aqua.config import get_settings
-from ganga_aqua.db.base import Base
-from ganga_aqua.db import models  # noqa: F401 — register models
+from india_aqua.config import get_settings
+from india_aqua.db.base import Base
+from india_aqua.db import models  # noqa: F401 — register models
 
 config = context.config
 if config.config_file_name is not None:

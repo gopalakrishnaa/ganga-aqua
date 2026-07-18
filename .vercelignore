@@ -18,7 +18,7 @@ sql
 uv.lock
 pyproject.toml
 render.yaml
-ganga_aqua.db
+india_aqua.db
 *.db
 !api/seed.db
 README.md

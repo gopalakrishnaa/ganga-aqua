@@ -1,6 +1,6 @@
 """API integration tests."""
 
-from ganga_aqua.services.auth import hash_api_key
+from india_aqua.services.auth import hash_api_key
 
 
 def test_health(api_client):
@@ -34,7 +34,7 @@ def test_deficiency(api_client):
 def test_unauthorized():
     from fastapi.testclient import TestClient
 
-    from ganga_aqua.api.app import create_app
+    from india_aqua.api.app import create_app
 
     client = TestClient(create_app())
     resp = client.get("/api/v1/stations")

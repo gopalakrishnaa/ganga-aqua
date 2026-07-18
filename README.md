@@ -1,6 +1,6 @@
-# ganga-aqua
+# india-aqua
 
-> SaaS-ready, API-first dashboard for **Ganga River water quality** — an autonomous
+> SaaS-ready, API-first dashboard for **Indian river water quality** — an autonomous
 > AI agent scrapes public data, validates it against hallucinations using an LLM at
 > `temperature=0`, stores it in PostgreSQL, and visualizes it via Streamlit BI.
 
@@ -8,7 +8,7 @@
 
 ## What this is
 
-`ganga-aqua` is a full-stack water-quality intelligence platform built around one idea:
+`india-aqua` is a full-stack water-quality intelligence platform built around one idea:
 **government data is valuable, but you must never trust a scraper's guess.**
 
 An autonomous agent:
@@ -48,11 +48,11 @@ uv run playwright install chromium   # browser for live scraping
 # 2. Database (uses your DATABASE_URL — e.g. Supabase project)
 uv run alembic upgrade head
 
-# 3. Seed realistic Ganga sample data
-uv run ganga-aqua seed
+# 3. Seed realistic sample data
+uv run india-aqua seed
 
 # 4. Run the API + dashboard
-uv run ganga-aqua runserver          # FastAPI on :8000
+uv run india-aqua runserver          # FastAPI on :8000
 uv run streamlit run dashboard/app.py # Streamlit on :8501
 ```
 
@@ -61,8 +61,8 @@ API docs: `http://localhost:8000/docs` · Dashboard: `http://localhost:8501`
 ## Project layout
 
 ```
-ganga-aqua/
-├── src/ganga_aqua/   # config, db models, agents, scrapers, services, api, cli
+india-aqua/
+├── src/india_aqua/   # config, db models, agents, scrapers, services, api, cli
 ├── dashboard/        # Streamlit BI app
 ├── sql/              # raw SQL schema + views + Supabase setup guide
 ├── alembic/          # migrations

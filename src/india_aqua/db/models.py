@@ -18,7 +18,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ganga_aqua.db.base import Base
+from india_aqua.db.base import Base
 
 
 class SaasTier(str, enum.Enum):

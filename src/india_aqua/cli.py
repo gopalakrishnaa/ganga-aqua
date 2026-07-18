@@ -1,4 +1,4 @@
-"""ganga-aqua CLI."""
+"""india-aqua CLI."""
 
 from __future__ import annotations
 
@@ -10,13 +10,13 @@ import uvicorn
 from rich.console import Console
 from rich.table import Table
 
-from ganga_aqua.config import get_settings
-from ganga_aqua.db.base import Base
-from ganga_aqua.db.session import SessionLocal, engine
-from ganga_aqua.services.cpcb_import import run_cpcb_import
-from ganga_aqua.services.seed import run_seed
+from india_aqua.config import get_settings
+from india_aqua.db.base import Base
+from india_aqua.db.session import SessionLocal, engine
+from india_aqua.services.cpcb_import import run_cpcb_import
+from india_aqua.services.seed import run_seed
 
-app = typer.Typer(name="ganga-aqua", help="Ganga River water-quality SaaS CLI")
+app = typer.Typer(name="india-aqua", help="Indian river water-quality SaaS CLI")
 console = Console()
 
 
@@ -35,7 +35,7 @@ def initdb() -> None:
 
 @app.command()
 def seed() -> None:
-    """Seed Ganga sample data + bootstrap SaaS client."""
+    """Seed sample data + bootstrap SaaS client."""
     _setup_logging()
     db = SessionLocal()
     try:
@@ -92,7 +92,7 @@ def runserver(
     _setup_logging()
     settings = get_settings()
     console.print(f"[cyan]Starting {settings.app_name} API on {host}:{port}[/cyan]")
-    uvicorn.run("ganga_aqua.api.app:app", host=host, port=port, reload=reload)
+    uvicorn.run("india_aqua.api.app:app", host=host, port=port, reload=reload)
 
 
 if __name__ == "__main__":

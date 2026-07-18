@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock
 
-from ganga_aqua.agents.analyzer import (
+from india_aqua.agents.analyzer import (
     AnalysisResult,
     WQIAnalyzer,
     classify_wqi,

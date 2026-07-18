@@ -16,4 +16,4 @@ sys.path.insert(0, os.path.join(_HERE, "..", "src"))
 if not os.environ.get("DATABASE_URL"):
     os.environ["DATABASE_URL"] = "sqlite:///" + os.path.join(_HERE, "seed.db")
 
-from ganga_aqua.api.app import app  # noqa: E402, F401
+from india_aqua.api.app import app  # noqa: E402, F401

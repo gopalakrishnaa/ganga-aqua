@@ -5,18 +5,18 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
-from ganga_aqua.api.deps import get_current_client
-from ganga_aqua.api.schemas import DeficiencyOut, ReadingOut, ScrapeResultOut, StationOut
-from ganga_aqua.db.models import SaasClient
-from ganga_aqua.db.session import get_db
-from ganga_aqua.services.readings import (
+from india_aqua.api.deps import get_current_client
+from india_aqua.api.schemas import DeficiencyOut, ReadingOut, ScrapeResultOut, StationOut
+from india_aqua.db.models import SaasClient
+from india_aqua.db.session import get_db
+from india_aqua.services.readings import (
     get_deficiency_report,
     get_latest_readings,
     get_readings_history,
     list_rivers,
     list_stations,
 )
-from ganga_aqua.services.scrape_pipeline import run_scrape_pipeline
+from india_aqua.services.scrape_pipeline import run_scrape_pipeline
 
 router = APIRouter(prefix="/api/v1", tags=["water-quality"])
 

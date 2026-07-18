@@ -14,10 +14,10 @@ import logging
 
 from sqlalchemy.orm import Session
 
-from ganga_aqua.agents.analyzer import WQIAnalyzer
-from ganga_aqua.scrapers.cpcb_report import CPCBReportScraper
-from ganga_aqua.services.scrape_pipeline import _get_or_create_station, _is_duplicate
-from ganga_aqua.db.models import WaterQualityReading
+from india_aqua.agents.analyzer import WQIAnalyzer
+from india_aqua.db.models import WaterQualityReading
+from india_aqua.scrapers.cpcb_report import CPCBReportScraper
+from india_aqua.services.scrape_pipeline import _get_or_create_station, _is_duplicate
 
 logger = logging.getLogger(__name__)
 

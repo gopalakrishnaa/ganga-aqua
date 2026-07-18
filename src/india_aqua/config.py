@@ -9,11 +9,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
-    app_name: str = "ganga-aqua"
+    app_name: str = "india-aqua"
     environment: str = "development"
     log_level: str = "INFO"
 
-    database_url: str = "postgresql+psycopg://postgres:postgres@localhost:5432/ganga_aqua"
+    database_url: str = "postgresql+psycopg://postgres:postgres@localhost:5432/india_aqua"
     database_migration_url: str | None = None
 
     @field_validator("database_url", "database_migration_url")

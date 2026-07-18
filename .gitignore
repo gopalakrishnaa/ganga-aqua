@@ -1,6 +1,6 @@
 # ── Database files (SQLite dev) ─────────────────────────────
-ganga_aqua.db
-ganga_aqua.db-journal
+india_aqua.db
+india_aqua.db-journal
 
 # ── Generated knowledge-graph output (graphify) ────────────
 graphify-out/

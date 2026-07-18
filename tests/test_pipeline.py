@@ -8,12 +8,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from ganga_aqua.agents.analyzer import AnalysisResult
-from ganga_aqua.agents.validator import ValidationResult
-from ganga_aqua.db.base import Base
-from ganga_aqua.db.models import MonitoringStation, WaterQualityReading
-from ganga_aqua.scrapers.base import ScrapedReading
-from ganga_aqua.services.scrape_pipeline import process_reading
+from india_aqua.agents.analyzer import AnalysisResult
+from india_aqua.agents.validator import ValidationResult
+from india_aqua.db.base import Base
+from india_aqua.db.models import MonitoringStation, WaterQualityReading
+from india_aqua.scrapers.base import ScrapedReading
+from india_aqua.services.scrape_pipeline import process_reading
 
 
 @pytest.fixture()

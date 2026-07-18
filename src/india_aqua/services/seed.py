@@ -1,4 +1,4 @@
-"""Seed realistic Ganga sample data."""
+"""Seed realistic sample data."""
 
 from __future__ import annotations
 
@@ -8,11 +8,11 @@ from datetime import UTC, datetime, timedelta
 
 from sqlalchemy.orm import Session
 
-from ganga_aqua.agents.analyzer import classify_wqi, compute_wqi
-from ganga_aqua.config import get_settings
-from ganga_aqua.db.models import MonitoringStation, SaasClient, SaasTier, WaterQualityReading
-from ganga_aqua.scrapers.ganga_sources import DEMO_STATIONS
-from ganga_aqua.services.auth import create_client, generate_api_key
+from india_aqua.agents.analyzer import classify_wqi, compute_wqi
+from india_aqua.config import get_settings
+from india_aqua.db.models import MonitoringStation, SaasClient, SaasTier, WaterQualityReading
+from india_aqua.scrapers.ganga_sources import DEMO_STATIONS
+from india_aqua.services.auth import create_client, generate_api_key
 
 logger = logging.getLogger(__name__)
 

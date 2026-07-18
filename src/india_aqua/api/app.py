@@ -10,9 +10,9 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
-from ganga_aqua.api.routes import router
-from ganga_aqua.api.schemas import HealthOut
-from ganga_aqua.config import get_settings
+from india_aqua.api.routes import router
+from india_aqua.api.schemas import HealthOut
+from india_aqua.config import get_settings
 
 logger = logging.getLogger(__name__)
 limiter = Limiter(key_func=get_remote_address)
@@ -22,7 +22,7 @@ def create_app() -> FastAPI:
     settings = get_settings()
     app = FastAPI(
         title=settings.app_name,
-        description="Ganga River water-quality SaaS API",
+        description="Indian river water-quality SaaS API",
         version="0.1.0",
     )
     app.state.limiter = limiter

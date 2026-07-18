@@ -5,9 +5,9 @@ from __future__ import annotations
 from fastapi import Depends, Header, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
-from ganga_aqua.db.models import SaasClient
-from ganga_aqua.db.session import get_db
-from ganga_aqua.services.auth import get_client_by_api_key
+from india_aqua.db.models import SaasClient
+from india_aqua.db.session import get_db
+from india_aqua.services.auth import get_client_by_api_key
 
 
 def get_current_client(
