@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 
 import typer
@@ -12,6 +13,7 @@ from rich.table import Table
 from ganga_aqua.config import get_settings
 from ganga_aqua.db.base import Base
 from ganga_aqua.db.session import SessionLocal, engine
+from ganga_aqua.services.cpcb_import import run_cpcb_import
 from ganga_aqua.services.seed import run_seed
 
 app = typer.Typer(name="ganga-aqua", help="Ganga River water-quality SaaS CLI")
@@ -49,6 +51,33 @@ def seed() -> None:
         console.print(table)
         if "bootstrap_api_key" in result:
             console.print("\n[dim]Save this API key — it won't be shown again.[/dim]")
+    finally:
+        db.close()
+
+
+@app.command()
+def import_cpcb_report(
+    dry_run: bool = typer.Option(False, help="Parse + geocode but don't write to the database"),
+) -> None:
+    """Import CPCB's 'Polluted River Stretches' report — real river/state/BOD/
+    priority data across every assessed state and UT. Run by hand whenever a
+    new report edition is published (roughly every 2 years); not part of the
+    periodic scrape rotation. Geocoding is rate-limited to Nominatim's 1
+    req/sec policy, so a cold run (~300 rows) takes several minutes; results
+    are cached in data/cpcb_geocode_cache.json so re-runs are near-instant.
+    Safe to re-run — stations are matched by cpcb_code and existing readings
+    are never duplicated.
+    """
+    _setup_logging()
+    db = SessionLocal()
+    try:
+        result = asyncio.run(run_cpcb_import(db, dry_run=dry_run))
+        table = Table(title="CPCB Report Import" + (" (dry run)" if dry_run else ""))
+        table.add_column("Key")
+        table.add_column("Value")
+        for key, value in result.items():
+            table.add_row(key, str(value))
+        console.print(table)
     finally:
         db.close()
 
