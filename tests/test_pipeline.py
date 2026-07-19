@@ -76,3 +76,10 @@ def test_rejected_reading_not_stored(db):
     status = process_reading(db, _scraped(), _validator(valid=False), _analyzer())
     assert status == "rejected"
     assert db.query(WaterQualityReading).count() == 0
+
+
+def test_none_validator_skips_hallucination_check(db):
+    """Structured-data scrapers (requires_llm_validation=False) pass validator=None."""
+    status = process_reading(db, _scraped(), None, _analyzer())
+    assert status == "stored"
+    assert db.query(WaterQualityReading).count() == 1

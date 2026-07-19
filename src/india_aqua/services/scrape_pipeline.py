@@ -18,10 +18,17 @@ from sqlalchemy.orm import Session
 from india_aqua.agents.analyzer import WQIAnalyzer
 from india_aqua.agents.validator import LLMValidator
 from india_aqua.db.models import MonitoringStation, ValidationLog, WaterQualityReading
-from india_aqua.scrapers.base import ScrapedReading
-from india_aqua.scrapers.ganga_sources import PlaywrightScraper
+from india_aqua.scrapers.base import BaseScraper, ScrapedReading
+from india_aqua.scrapers.cpcb_realtime import CPCBRealtimeScraper
+from india_aqua.scrapers.ganga_sources import DemoScraper, PlaywrightScraper
 
 logger = logging.getLogger(__name__)
+
+SCRAPER_SOURCES: dict[str, type[BaseScraper]] = {
+    "cpcb_realtime": CPCBRealtimeScraper,  # live SWAN network — real values
+    "demo": DemoScraper,  # synthetic, for local dev without network access
+    "playwright": PlaywrightScraper,  # legacy: page-text snippet + synthetic metrics
+}
 
 
 def _get_or_create_station(db: Session, scraped: ScrapedReading) -> MonitoringStation:
@@ -65,24 +72,30 @@ def _is_duplicate(db: Session, station_id: int, scraped: ScrapedReading) -> bool
 def process_reading(
     db: Session,
     scraped: ScrapedReading,
-    validator: LLMValidator,
+    validator: LLMValidator | None,
     analyzer: WQIAnalyzer,
 ) -> str:
-    """Returns one of: "stored", "rejected", "duplicate"."""
-    # 2. verify (hallucination / mismatch check, temperature=0)
-    result = validator.validate(scraped.raw_text, scraped.metrics)
-    if not result.valid:
-        db.add(
-            ValidationLog(
-                raw_text=scraped.raw_text,
-                extracted_json=json.dumps(scraped.metrics),
-                reason=result.reason,
-                source_url=scraped.source_url,
+    """Returns one of: "stored", "rejected", "duplicate".
+
+    `validator=None` skips the hallucination check — appropriate for sources
+    that hand us structured data directly (see BaseScraper.requires_llm_validation),
+    where there was no LLM extraction step for the validator to police.
+    """
+    # 2. verify (hallucination / mismatch check, temperature=0) — when applicable
+    if validator is not None:
+        result = validator.validate(scraped.raw_text, scraped.metrics)
+        if not result.valid:
+            db.add(
+                ValidationLog(
+                    raw_text=scraped.raw_text,
+                    extracted_json=json.dumps(scraped.metrics),
+                    reason=result.reason,
+                    source_url=scraped.source_url,
+                )
             )
-        )
-        db.commit()
-        logger.info("Validation rejected for %s: %s", scraped.station_name, result.reason)
-        return "rejected"
+            db.commit()
+            logger.info("Validation rejected for %s: %s", scraped.station_name, result.reason)
+            return "rejected"
 
     station = _get_or_create_station(db, scraped)
 
@@ -122,11 +135,12 @@ def process_reading(
     return "stored"
 
 
-async def run_scrape_pipeline(db: Session, use_playwright: bool = True) -> dict[str, int]:
-    scraper = PlaywrightScraper() if use_playwright else __import__(
-        "india_aqua.scrapers.ganga_sources", fromlist=["DemoScraper"]
-    ).DemoScraper()
-    validator = LLMValidator()
+async def run_scrape_pipeline(db: Session, source: str = "cpcb_realtime") -> dict[str, int]:
+    scraper_cls = SCRAPER_SOURCES.get(source)
+    if scraper_cls is None:
+        raise ValueError(f"Unknown scrape source {source!r}, expected one of {sorted(SCRAPER_SOURCES)}")
+    scraper = scraper_cls()
+    validator = LLMValidator() if scraper_cls.requires_llm_validation else None
     analyzer = WQIAnalyzer()
     scraped_list = await scraper.scrape()
 

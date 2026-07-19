@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from india_aqua.api.deps import get_current_client
 from india_aqua.api.schemas import DeficiencyOut, ReadingOut, ScrapeResultOut, StationOut
+from india_aqua.config import get_settings
 from india_aqua.db.models import SaasClient
 from india_aqua.db.session import get_db
 from india_aqua.services.readings import (
@@ -86,13 +87,32 @@ def api_deficiency(
 
 @router.post("/scrape", response_model=ScrapeResultOut)
 async def api_trigger_scrape(
-    demo: bool = Query(default=False, description="Use demo scraper (skip Playwright)"),
+    demo: bool = Query(default=False, description="Use synthetic demo data instead of the live CPCB feed"),
     db: Session = Depends(get_db),
     client: SaasClient = Depends(get_current_client),
 ):
     if client.tier.value not in ("pro", "enterprise"):
-        from fastapi import HTTPException
-
         raise HTTPException(status_code=403, detail="Scrape trigger requires pro or enterprise tier")
-    result = await run_scrape_pipeline(db, use_playwright=not demo)
+    result = await run_scrape_pipeline(db, source="demo" if demo else "cpcb_realtime")
+    return ScrapeResultOut(**result)
+
+
+@router.get("/internal/cron/scrape", response_model=ScrapeResultOut, include_in_schema=False)
+async def cron_trigger_scrape(
+    authorization: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    """Scheduled entry point for Vercel Cron (GET-only, no per-client API key).
+    Vercel automatically sends `Authorization: Bearer $CRON_SECRET` on cron
+    requests when a CRON_SECRET env var is set on the project — that's the
+    only thing guarding this, not the SaaS tier system (not a client-facing
+    feature). Disabled entirely (404) if CRON_SECRET isn't set, so a
+    misconfigured deploy fails closed rather than exposing an unauthenticated
+    write endpoint."""
+    settings = get_settings()
+    if not settings.cron_secret:
+        raise HTTPException(status_code=404, detail="Not found")
+    if authorization != f"Bearer {settings.cron_secret}":
+        raise HTTPException(status_code=401, detail="Invalid cron secret")
+    result = await run_scrape_pipeline(db, source="cpcb_realtime")
     return ScrapeResultOut(**result)

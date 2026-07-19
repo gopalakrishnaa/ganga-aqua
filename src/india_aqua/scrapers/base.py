@@ -24,6 +24,12 @@ class ScrapedReading:
 
 class BaseScraper(ABC):
     name: str = "base"
+    # Whether readings from this source need the LLM hallucination validator.
+    # That validator's job is catching an LLM fabricating numbers while
+    # extracting them from messy scraped prose — irrelevant for scrapers that
+    # read a source's own structured JSON/table data directly (nothing was
+    # "extracted" by an LLM in the first place).
+    requires_llm_validation: bool = True
 
     @abstractmethod
     async def scrape(self) -> list[ScrapedReading]:
