@@ -8,11 +8,17 @@ on:
     - cron: "*/30 * * * *"
   workflow_dispatch:
 
+concurrency:
+  group: cpcb-scrape
+  cancel-in-progress: false
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     steps:
       - name: Trigger scrape
         run: |
           curl -sS -f -X GET "https://indiaaqua-api.vercel.app/api/v1/internal/cron/scrape" \
-            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 120
