@@ -170,6 +170,17 @@ export function StationMap({
   );
 }
 
+function formatRelativeTime(iso: string): string {
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const minutes = Math.round(diffMs / 60_000);
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.round(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.round(hours / 24);
+  return `${days}d ago`;
+}
+
 function StationPopup({
   station,
   onClose,
@@ -199,13 +210,20 @@ function StationPopup({
         </button>
       </div>
 
-      <span
-        className={`mt-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium ${meta.pill}`}
-      >
-        <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
-        {meta.label}
-        {station.issueCount > 0 && ` · ${station.issueCount} issue${station.issueCount > 1 ? "s" : ""}`}
-      </span>
+      <div className="mt-2 flex items-center gap-2">
+        <span
+          className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium ${meta.pill}`}
+        >
+          <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
+          {meta.label}
+          {station.issueCount > 0 && ` · ${station.issueCount} issue${station.issueCount > 1 ? "s" : ""}`}
+        </span>
+        {latest?.recorded_at && (
+          <span className="text-xs text-slate-400" title={new Date(latest.recorded_at).toLocaleString()}>
+            {formatRelativeTime(latest.recorded_at)}
+          </span>
+        )}
+      </div>
 
       {latest?.wqi != null && (
         <div className="mt-2.5 flex items-baseline gap-2 rounded-lg bg-cyan-50 px-2.5 py-1.5">
